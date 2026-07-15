@@ -50,33 +50,31 @@ void print_file(const char *path) {
 
     if (fstat(fd, &metadata) == -1) {
         printf("Error getting file stats\n");
-        close(fd);
-        return;
+        goto metaerror;
     }
 
     char *buf = malloc(metadata.st_size + 1);
 
     if (buf == NULL) {
         printf("Memory allocation failed\n");
-        close(fd);
-        free(buf);
-        return;
+        goto buffererror;;
     }
 
     ssize_t bytes_read = read(fd, buf, metadata.st_size);
 
     if (bytes_read == -1) {
         printf("Error reading file\n");
-        close(fd);
-        free(buf);
-        return;
+        goto buffererror;
     }
 
     buf[bytes_read] = '\0';
     printf("\n%s contents:\n\n%s\n", path, buf);
 
-    close(fd);
-    free(buf);
+    buffererror:
+        free(buf);
+
+    metaerror:
+        close(fd);
 }
 
 int main() {
