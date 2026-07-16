@@ -18,22 +18,37 @@ char* path(char *req) {
 
     start++;
 
+    char *last_slash = NULL;
+    char *last_dot = NULL;
+
     for (end = start; end[0] != ' '; end++) {
-        if (!end[0]) {
-            return NULL;
-        }
+        switch (end[0]) {
+            case '/':
+                last_slash = end;
+                break;
+            case '.':
+                last_dot = end;
+                break;
+            case '\0':
+                return NULL;
+            }
     }
 
-    if (end[-1] != '/') {
-        end[0] = '/';
-        end++;
-    }
-
-    if (end + strlen(DEFAULT_FILE) > req + strlen(req)) {
+    if (last_slash == NULL) {
         return NULL;
     }
 
-    memcpy(end, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
+    if (last_dot == NULL || last_slash > last_dot) {
+        last_slash++;
+
+        if (last_slash + strlen(DEFAULT_FILE) > req + strlen(req)) {
+            return NULL;
+        }
+
+        memcpy(last_slash, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
+    } else {
+        end[0] = '\0';
+    }
 
     return start + 1;
 }
@@ -83,6 +98,10 @@ int main() {
 
     char req2[] = "GET /jeff HTTP/1.1\nHost: example.com";
     print_file(path(req2));
+
+    char req3[] = "GET /static/images/logo.png HTTP/1.1\nHost: example.com";
+    printf("%s\n", path(req3));
+    print_file(path(req3));
 
 
     return 0;
