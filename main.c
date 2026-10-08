@@ -72,7 +72,7 @@ void print_file(const char *path) {
 
     if (buf == NULL) {
         printf("Memory allocation failed\n");
-        goto buffererror;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        goto buffererror;
     }
 
     ssize_t bytes_read = read(fd, buf, metadata.st_size);
