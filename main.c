@@ -86,10 +86,10 @@ void print_file(const char *path) {
     printf("\n%s contents:\n\n%s\n", path, buf);
 
     buffererror:
-        free(buf);
+    free(buf);
 
     metaerror:
-        close(fd);
+    close(fd);
 }
 
 int main() {
